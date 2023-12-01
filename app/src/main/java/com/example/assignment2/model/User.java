@@ -1,27 +1,24 @@
 package com.example.assignment2.model;
 
 public class User {
-    private String type;
-    private String username;
-    private String password;
-    private boolean isOwner;
+    private Integer type; // 0 = admin, 1 = user
+    private String username, password;
     private Site site; // if the user is owner
 
     public User(){}
 
-    public User(String type, String username, String password, boolean isOwner, Site site) {
+    public User(Integer type, String username, String password, Site site) {
         this.type = type;
         this.username = username;
         this.password = password;
-        this.isOwner = isOwner;
         this.site = site;
     }
 
-    public String getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 
@@ -39,14 +36,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public boolean isOwner() {
-        return isOwner;
-    }
-
-    public void setOwner(boolean owner) {
-        isOwner = owner;
     }
 
     public Site getSite() {
