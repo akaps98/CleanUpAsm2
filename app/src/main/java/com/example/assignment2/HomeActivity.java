@@ -3,7 +3,10 @@ package com.example.assignment2;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -15,36 +18,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity {
+    Button signupButton, loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        signupButton = findViewById(R.id.signup_button);
+        loginButton = findViewById(R.id.login_button);
 
-        // Create a new user with a first and last name
-        Map<String, Object> user = new HashMap<>();
-        user.put("username", "test1234");
-        user.put("password", "test4321");
-        user.put("type", 1);
+        signupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
+                startActivity(intent);
+            }
+        });
 
-        // Add a new document with a generated ID
-//        db.collection("User")
-//                .add(user)
-//                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-//                    @Override
-//                    public void onSuccess(DocumentReference documentReference) {
-//                        String msg =  "DocumentSnapshot added with ID: " + documentReference.getId();
-//                        Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        String error = "Error adding document" + e.toString();
-//                        Toast.makeText(HomeActivity.this, error, Toast.LENGTH_SHORT).show();
-//                    }
-//                });
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), LogInActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
