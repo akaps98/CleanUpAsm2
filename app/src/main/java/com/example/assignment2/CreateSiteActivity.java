@@ -8,6 +8,8 @@ import androidx.fragment.app.FragmentActivity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -45,6 +47,7 @@ import java.util.ArrayList;
 
 public class CreateSiteActivity extends FragmentActivity implements OnMapReadyCallback {
     private final String TAG = CreateSiteActivity.class.getName();
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 99;
     private GoogleMap mMap;
     private ActivityCreateSiteBinding binding;
     protected FusedLocationProviderClient client;
@@ -82,6 +85,8 @@ public class CreateSiteActivity extends FragmentActivity implements OnMapReadyCa
 
         mMap.getUiSettings().setZoomControlsEnabled(true);
 
+        getLastLocation();
+
         db.collection("Site").get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -103,18 +108,26 @@ public class CreateSiteActivity extends FragmentActivity implements OnMapReadyCa
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
-
-                        startLocationUpdate();
                     }
                 });
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(@NonNull Marker marker) {
-                String message = "Site name: " + marker.getTitle()
-                                + "\nLatitude: " + marker.getPosition().latitude
-                                + "\nLongitude: " + marker.getPosition().longitude
-                                + "\nOwner: " + marker.getId();
+                String message = "Site name: " + marker.getTitle();
+//                                + "\nLatitude: " + marker.getPosition().latitude
+//                                + "\nLongitude: " + marker.getPosition().longitude
+//                                + "\nOwner: " + marker.getId();
+//                AlertDialog.Builder dlg = new AlertDialog.Builder(CreateSiteActivity.this);
+//                dlg.setTitle("Site details");
+//                dlg.setMessage(message);
+//                dlg.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        Toast.makeText(CreateSiteActivity.this, "Most championships", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//                dlg.show(); // 나중에 join activity에서 받아쓰기 -> 디테일한 사이트 정보 보여주는거
                 Toast.makeText(CreateSiteActivity.this, message, Toast.LENGTH_SHORT).show();
                 return false;
             }
@@ -176,26 +189,31 @@ public class CreateSiteActivity extends FragmentActivity implements OnMapReadyCa
                 Manifest.permission.INTERNET},99);
     }
 
-    private void onLocationChanged(Location lastLocation) {
+    private void moveCameraToCurrentLocation(Location location) {
         String message = "Your current location " +
-                Double.toString(lastLocation.getLatitude()) + " ," + Double.toString((lastLocation.getLongitude()));
-        LatLng curLoc = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+                Double.toString(location.getLatitude()) + " ," + Double.toString(location.getLongitude());
+        LatLng curLoc = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.addMarker(new MarkerOptions().position(curLoc).title("Current location"));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(curLoc, 18));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curLoc, 16));
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    @SuppressLint({"RestrictedApi", "MissingPermission"})
-    private void startLocationUpdate() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    private void getLastLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+            return;
+        }
 
-        client.requestLocationUpdates(mLocationRequest, new LocationCallback() {
-            @Override
-            public void onLocationResult(@NonNull LocationResult locationResult) {
-                onLocationChanged(locationResult.getLastLocation());
-            }
-        }, null);
+        client.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            moveCameraToCurrentLocation(location);
+                        }
+                    }
+                });
     }
 
     private Bitmap resizeBitmap(String imgName, int width, int height) {

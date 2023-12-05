@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -42,11 +43,12 @@ import java.util.List;
 
 public class UserDashboardActivity extends AppCompatActivity {
     private final String TAG = UserDashboardActivity.class.getName();
+    private final int REQUEST_CODE = 101;
     TextView helloUser;
     Button createButton, joinButton, siteButton;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    DocumentReference docRef = db.collection("User").document(user.getEmail());
+    DocumentReference docRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,9 @@ public class UserDashboardActivity extends AppCompatActivity {
         createButton = findViewById(R.id.create_button);
         joinButton = findViewById(R.id.join_button);
         siteButton = findViewById(R.id.site_button);
+
+
+        docRef = db.collection("User").document(user.getEmail());
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -105,8 +110,6 @@ public class UserDashboardActivity extends AppCompatActivity {
                             }
                         }
                     });
-
-
                 } else {
                     Log.d(TAG, "No such document");
                 }
@@ -116,7 +119,78 @@ public class UserDashboardActivity extends AppCompatActivity {
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // navigate to joinsite activity
+            }
+        });
 
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    // 오류 처리
+                    return;
+                }
+
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    DocumentReference updatedDocRef = documentSnapshot.getReference();
+                    updatedDocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                Log.d(TAG, "Cached document data: " + document.getData());
+                                String siteLatitude;
+                                if(document.getData().get("site") == null) {
+                                    siteLatitude = "";
+                                } else {
+                                    siteLatitude = document.getData().get("site").toString();
+                                }
+
+                                createButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if(siteLatitude != "") {
+                                            Toast.makeText(UserDashboardActivity.this, "You already created site!", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Intent intent = new Intent(getApplicationContext(), CreateSiteActivity.class);
+                                            startActivity(intent);
+                                        }
+                                    }
+                                });
+
+                                siteButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if(siteLatitude == "") {
+                                            Toast.makeText(UserDashboardActivity.this, "You don't have any owned site!", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            db.collection("Site").document(siteLatitude).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    DocumentSnapshot document = task.getResult();
+                                                    Site ownedSite = document.toObject(Site.class);
+
+                                                    Intent intent = new Intent(getApplicationContext(), OwnedSiteActivity.class);
+                                                    intent.putExtra("site", ownedSite);
+                                                    startActivity(intent);
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+                            } else {
+                                Log.d(TAG, "No such document");
+                            }
+                        }
+                    });
+
+                    joinButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // navigate to joinsite activity
+                        }
+                    });
+                }
             }
         });
     }
