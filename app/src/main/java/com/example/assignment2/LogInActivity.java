@@ -48,9 +48,15 @@ public class LogInActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()) {
-                                    Toast.makeText(LogInActivity.this, "Log in Success", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(LogInActivity.this, UserDashboardActivity.class);
-                                    startActivity(intent);
+                                    if(email.equals("admin@gmail.com")) { // admin account; email: admin@gmail.com, password: admin1234
+                                        Toast.makeText(LogInActivity.this, "Hello, admin!", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(LogInActivity.this, AdminActivity.class);
+                                        startActivity(intent);
+                                    } else {
+                                        //Toast.makeText(LogInActivity.this, "Log in Success!", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(LogInActivity.this, UserDashboardActivity.class);
+                                        startActivity(intent);
+                                    }
                                 } else {
                                     Toast.makeText(LogInActivity.this, "Login failed!\nCheck your email & password again.", Toast.LENGTH_SHORT).show();
                                 }

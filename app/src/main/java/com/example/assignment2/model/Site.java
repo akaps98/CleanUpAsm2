@@ -1,37 +1,58 @@
 package com.example.assignment2.model;
 
-public class Site {
-    private float latitude, longitude;
-    private String name, desc; // site name, short description of site
-    private User owner;
-    private User[] participants; // All joined volunteers
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
+public class Site implements Serializable {
+    private double latitude, longitude;
+    private String name; // site name
+    private String owner;
+    private ArrayList<String> participants; // All joined volunteers
     private Integer collected; // amount of waste collected
 
     public Site(){}
 
-    public Site(float latitude, float longitude, String name, String desc, User owner, User[] participants, Integer collected) {
+    public Site(double latitude, double longitude, String name, String owner) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.name = name;
-        this.desc = desc;
+        this.collected = 0;
+        this.owner = owner;
+        this.participants = new ArrayList<>();
+    }
+    public Site(double latitude, double longitude, String name, Integer collected) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.name = name;
+        this.collected = collected;
+        this.owner = "";
+        this.participants = new ArrayList<>();
+    }
+
+    public Site(double latitude, double longitude, String name, String owner, ArrayList<String> participants, Integer collected) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.name = name;
         this.owner = owner;
         this.participants = participants;
         this.collected = collected;
     }
 
-    public float getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(float latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public float getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(float longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
@@ -43,27 +64,19 @@ public class Site {
         this.name = name;
     }
 
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-
-    public User getOwner() {
+    public String getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 
-    public User[] getParticipants() {
+    public ArrayList<String> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(User[] participants) {
+    public void setParticipants(ArrayList<String> participants) {
         this.participants = participants;
     }
 

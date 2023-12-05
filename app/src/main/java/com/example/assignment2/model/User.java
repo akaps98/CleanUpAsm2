@@ -1,5 +1,7 @@
 package com.example.assignment2.model;
 
+import java.util.HashMap;
+
 public class User {
     private String email, password;
     private Site site; // if the user is owner
@@ -40,4 +42,5 @@ public class User {
     public void setSite(Site site) {
         this.site = site;
     }
+
 }

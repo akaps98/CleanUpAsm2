@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.assignment2.model.Site;
 import com.example.assignment2.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -98,23 +99,18 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void writeNewUser(String email, String password) {
+        //Site site = new Site(10.203012, 12.543535, "Bangkok", 23); // 나중에 지우기
         User user = new User(email, password);
 
         FirebaseFirestore database = FirebaseFirestore.getInstance();
 
-        database.collection("User").add(user)
-            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                @Override
-                public void onSuccess(DocumentReference documentReference) {
+        database.collection("User").document(email).set(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
 
-                }
-            })
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-
-                }
-            });
+                    }
+                });
     }
 
     public boolean onSupportNavigateUp(){
