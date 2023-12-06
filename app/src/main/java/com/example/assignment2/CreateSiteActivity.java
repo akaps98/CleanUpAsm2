@@ -190,8 +190,7 @@ public class CreateSiteActivity extends FragmentActivity implements OnMapReadyCa
     }
 
     private void moveCameraToCurrentLocation(Location location) {
-        String message = "Your current location " +
-                Double.toString(location.getLatitude()) + " ," + Double.toString(location.getLongitude());
+        String message = "Your current location (Red Marker)";
         LatLng curLoc = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.addMarker(new MarkerOptions().position(curLoc).title("Current location"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curLoc, 16));
