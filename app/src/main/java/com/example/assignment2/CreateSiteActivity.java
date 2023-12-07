@@ -51,7 +51,6 @@ public class CreateSiteActivity extends FragmentActivity implements OnMapReadyCa
     private GoogleMap mMap;
     private ActivityCreateSiteBinding binding;
     protected FusedLocationProviderClient client;
-    protected LocationRequest mLocationRequest;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 

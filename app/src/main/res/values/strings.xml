@@ -3,4 +3,13 @@
     <string name="title_activity_sign_up">SignUpActivity</string>
     <string name="title_activity_owned_site">OwnedSiteActivity</string>
     <string name="title_activity_create_site">CreateSiteActivity</string>
+    <string name="title_activity_join_site">JoinSiteActivity</string>
+    <string name="default_zoomLevel">Zoom In</string>
+    <string-array name="zoomLevel_options">
+        <item>Zoom In</item>
+        <item>more narrow</item>
+        <item>less narrow</item>
+        <item>less wider</item>
+        <item>more wider</item>
+    </string-array>
 </resources>

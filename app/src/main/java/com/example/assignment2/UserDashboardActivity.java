@@ -167,12 +167,14 @@ public class UserDashboardActivity extends AppCompatActivity {
                                             db.collection("Site").document(siteLatitude).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                    DocumentSnapshot document = task.getResult();
-                                                    Site ownedSite = document.toObject(Site.class);
+                                                    if (documentSnapshot.exists()) {
+                                                        DocumentSnapshot document = task.getResult();
+                                                        Site ownedSite = document.toObject(Site.class);
 
-                                                    Intent intent = new Intent(getApplicationContext(), OwnedSiteActivity.class);
-                                                    intent.putExtra("site", ownedSite);
-                                                    startActivity(intent);
+                                                        Intent intent = new Intent(getApplicationContext(), OwnedSiteActivity.class);
+                                                        intent.putExtra("site", ownedSite);
+                                                        startActivity(intent);
+                                                    }
                                                 }
                                             });
                                         }
@@ -187,7 +189,8 @@ public class UserDashboardActivity extends AppCompatActivity {
                     joinButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            // navigate to joinsite activity
+                            Intent intent = new Intent(getApplicationContext(), JoinSiteActivity.class);
+                            startActivity(intent);
                         }
                     });
                 }
