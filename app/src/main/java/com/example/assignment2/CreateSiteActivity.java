@@ -78,7 +78,6 @@ public class CreateSiteActivity extends FragmentActivity implements OnMapReadyCa
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        requestPermission();
         client = LocationServices.getFusedLocationProviderClient(CreateSiteActivity.this);
         mMap = googleMap;
 
@@ -114,19 +113,7 @@ public class CreateSiteActivity extends FragmentActivity implements OnMapReadyCa
             @Override
             public boolean onMarkerClick(@NonNull Marker marker) {
                 String message = "Site name: " + marker.getTitle();
-//                                + "\nLatitude: " + marker.getPosition().latitude
-//                                + "\nLongitude: " + marker.getPosition().longitude
-//                                + "\nOwner: " + marker.getId();
-//                AlertDialog.Builder dlg = new AlertDialog.Builder(CreateSiteActivity.this);
-//                dlg.setTitle("Site details");
-//                dlg.setMessage(message);
-//                dlg.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        Toast.makeText(CreateSiteActivity.this, "Most championships", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//                dlg.show(); // 나중에 join activity에서 받아쓰기 -> 디테일한 사이트 정보 보여주는거
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 18));
                 Toast.makeText(CreateSiteActivity.this, message, Toast.LENGTH_SHORT).show();
                 return false;
             }
@@ -180,12 +167,6 @@ public class CreateSiteActivity extends FragmentActivity implements OnMapReadyCa
             }
         });
 
-    }
-    private void requestPermission() {
-        ActivityCompat.requestPermissions(CreateSiteActivity.this, new String[]{
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.INTERNET},99);
     }
 
     private void moveCameraToCurrentLocation(Location location) {

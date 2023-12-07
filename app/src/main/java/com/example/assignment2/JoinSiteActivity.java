@@ -104,11 +104,17 @@ public class JoinSiteActivity extends FragmentActivity implements OnMapReadyCall
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() { // search function
             @Override
             public boolean onQueryTextSubmit(String query) {
+                boolean isFound = false;
                 for (Site site : allSites) { // if the query(searching words) is equal to real site name, it moves camera to that site.
                     if (site.getName().toLowerCase().contains(query.toLowerCase(Locale.ROOT))) {
                         LatLng siteLatLng = new LatLng(site.getLatitude(), site.getLongitude());
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(siteLatLng, 16));
+                        isFound = true;
                     }
+                }
+
+                if(!isFound) { // query is not equal to any site name
+                    Toast.makeText(JoinSiteActivity.this, "No site!", Toast.LENGTH_SHORT).show();
                 }
                 return false;
             }
@@ -123,24 +129,23 @@ public class JoinSiteActivity extends FragmentActivity implements OnMapReadyCall
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
-                    case 0:
-                        // default
+                    case 0: // placeholder
                         break;
-                    case 1:
+                    case 1: // More narrow
                         zoomLevel = 22.0f;
                         break;
-                    case 2:
+                    case 2: // Less narrow
                         zoomLevel = 19.0f;
                         break;
-                    case 3:
+                    case 3: // Less wide
                         zoomLevel = 16.0f;
                         break;
-                    case 4:
+                    case 4: // More wide
                         zoomLevel = 12.0f;
                         break;
                 }
 
-                // 나중에 검색
+                // 금요일에 물어보기! (requestPermissin 메서드넣으면 안돼서 이거넣었다고)
                 if (ActivityCompat.checkSelfPermission(JoinSiteActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                         && ActivityCompat.checkSelfPermission(JoinSiteActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(JoinSiteActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
@@ -179,7 +184,7 @@ public class JoinSiteActivity extends FragmentActivity implements OnMapReadyCall
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        requestPermission();
+        //requestPermission();
         client = LocationServices.getFusedLocationProviderClient(JoinSiteActivity.this);
         mMap = googleMap;
 
@@ -200,7 +205,7 @@ public class JoinSiteActivity extends FragmentActivity implements OnMapReadyCall
 
                                 Marker[] markers = new Marker[allSites.size()];
 
-                                for(int i = 0; i < allSites.size(); i++) {
+                                for(int i = 0; i < allSites.size(); i++) { // create custom markers according to the location of registered sites
                                     markers[i] = createMarker(allSites.get(i).getLatitude(), allSites.get(i).getLongitude(), allSites.get(i).getName());
                                 }
 
@@ -222,6 +227,7 @@ public class JoinSiteActivity extends FragmentActivity implements OnMapReadyCall
                                     Site site = documentSnapshot.toObject(Site.class);
                                     String ownerName = site.getOwner();
 
+                                    // create dialog message to display details of site to user
                                     String message = "Site name: " + marker.getTitle()
                                                     + "\nOwner: " + ownerName
                                                     + "\nLatitude: " + marker.getPosition().latitude
@@ -243,18 +249,18 @@ public class JoinSiteActivity extends FragmentActivity implements OnMapReadyCall
                                                         if (documentSnapshot.exists()) {
                                                             ArrayList<String> alreadyParticipants = (ArrayList<String>) documentSnapshot.get("participants");
 
-                                                            if (alreadyParticipants.contains(user.getEmail())) {
+                                                            if (alreadyParticipants.contains(user.getEmail())) { // if the user is already join on selected site
                                                                 Toast.makeText(JoinSiteActivity.this, "You already joined at this site!", Toast.LENGTH_SHORT).show();
-                                                            } else { // already joined user
+                                                            } else {
                                                                 Map<String, Object> userJoin = new HashMap<>();
                                                                 userJoin.put("participants", FieldValue.arrayUnion(user.getEmail()));
 
                                                                 db.collection("Site").document(String.valueOf(marker.getPosition().latitude))
-                                                                        .update(userJoin)
+                                                                        .update(userJoin) // update Site db to join user
                                                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                         @Override
                                                                         public void onSuccess(Void aVoid) {
-                                                                            Toast.makeText(JoinSiteActivity.this, "You have joined the site!", Toast.LENGTH_SHORT).show();
+                                                                            Toast.makeText(JoinSiteActivity.this, "Success to join!", Toast.LENGTH_SHORT).show();
                                                                         }
                                                                 });
                                                             }
@@ -271,20 +277,13 @@ public class JoinSiteActivity extends FragmentActivity implements OnMapReadyCall
                                         }
                                     });
                                     alert.show();
-
+                                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 18));
                                 }
                             }
                         });
                 return false;
             }
         });
-    }
-
-    private void requestPermission() {
-        ActivityCompat.requestPermissions(JoinSiteActivity.this, new String[]{
-                android.Manifest.permission.ACCESS_FINE_LOCATION,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.INTERNET},99);
     }
 
     private void moveCameraToCurrentLocation(Location location) {

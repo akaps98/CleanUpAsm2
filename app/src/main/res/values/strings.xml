@@ -7,9 +7,9 @@
     <string name="default_zoomLevel">Zoom In</string>
     <string-array name="zoomLevel_options">
         <item>Zoom In</item>
-        <item>more narrow</item>
-        <item>less narrow</item>
-        <item>less wider</item>
-        <item>more wider</item>
+        <item>More narrow</item>
+        <item>Less narrow</item>
+        <item>Less wide</item>
+        <item>More wide</item>
     </string-array>
 </resources>
