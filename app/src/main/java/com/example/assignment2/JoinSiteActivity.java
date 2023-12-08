@@ -235,20 +235,24 @@ public class JoinSiteActivity extends FragmentActivity implements OnMapReadyCall
                                                         if (documentSnapshot.exists()) {
                                                             ArrayList<String> alreadyParticipants = (ArrayList<String>) documentSnapshot.get("participants");
 
-                                                            if (alreadyParticipants.contains(user.getEmail())) { // if the user is already join on selected site
-                                                                Toast.makeText(JoinSiteActivity.this, "You already joined at this site!", Toast.LENGTH_SHORT).show();
+                                                            if (site.getOwner().equals(user.getEmail())) {
+                                                                Toast.makeText(JoinSiteActivity.this, "You are an owner of this site!\nDecline to join.", Toast.LENGTH_SHORT).show();
                                                             } else {
-                                                                Map<String, Object> userJoin = new HashMap<>();
-                                                                userJoin.put("participants", FieldValue.arrayUnion(user.getEmail()));
+                                                                if (alreadyParticipants != null && alreadyParticipants.contains(user.getEmail())) { // if the user is already join on selected site
+                                                                    Toast.makeText(JoinSiteActivity.this, "You already joined at this site!\nDecline to join.", Toast.LENGTH_SHORT).show();
+                                                                } else {
+                                                                    Map<String, Object> userJoin = new HashMap<>();
+                                                                    userJoin.put("participants", FieldValue.arrayUnion(user.getEmail()));
 
-                                                                db.collection("Site").document(String.valueOf(marker.getPosition().latitude))
-                                                                        .update(userJoin) // update Site db to join user
-                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                        @Override
-                                                                        public void onSuccess(Void aVoid) {
-                                                                            Toast.makeText(JoinSiteActivity.this, "Success to join!", Toast.LENGTH_SHORT).show();
-                                                                        }
-                                                                });
+                                                                    db.collection("Site").document(String.valueOf(marker.getPosition().latitude))
+                                                                            .update(userJoin) // update Site db to join user
+                                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                @Override
+                                                                                public void onSuccess(Void aVoid) {
+                                                                                    Toast.makeText(JoinSiteActivity.this, "Success to join!", Toast.LENGTH_SHORT).show();
+                                                                                }
+                                                                            });
+                                                                }
                                                             }
                                                         }
                                                     }

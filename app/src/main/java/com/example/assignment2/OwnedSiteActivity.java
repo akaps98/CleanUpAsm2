@@ -82,8 +82,12 @@ public class OwnedSiteActivity extends FragmentActivity implements OnMapReadyCal
         ownedSiteName.append(ownedSite.getName());
         collectedWaste.append(ownedSite.getCollected().toString());
 
-        for(int i = 0; i < ownedSite.getParticipants().size(); i++) {
-            volunteersName.append(ownedSite.getParticipants().get(i).toString() + "\n");
+        if(ownedSite.getParticipants().size() != 0) {
+            for (int i = 0; i < ownedSite.getParticipants().size(); i++) {
+                volunteersName.append(ownedSite.getParticipants().get(i).toString() + "\n");
+            }
+        } else {
+            volunteersName.setText("No participants...");
         }
 
         editWaste_button.setOnClickListener(new View.OnClickListener() {
