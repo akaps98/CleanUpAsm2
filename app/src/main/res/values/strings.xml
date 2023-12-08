@@ -12,4 +12,5 @@
         <item>Less wide</item>
         <item>More wide</item>
     </string-array>
+    <string name="title_activity_site_detail">SiteDetailActivity</string>
 </resources>

@@ -62,18 +62,6 @@ public class JoinSiteActivity extends FragmentActivity implements OnMapReadyCall
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getCurrentLocation();
-            } else {
-                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -145,7 +133,6 @@ public class JoinSiteActivity extends FragmentActivity implements OnMapReadyCall
                         break;
                 }
 
-                // 금요일에 물어보기! (requestPermissin 메서드넣으면 안돼서 이거넣었다고)
                 if (ActivityCompat.checkSelfPermission(JoinSiteActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                         && ActivityCompat.checkSelfPermission(JoinSiteActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(JoinSiteActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
@@ -184,7 +171,6 @@ public class JoinSiteActivity extends FragmentActivity implements OnMapReadyCall
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        //requestPermission();
         client = LocationServices.getFusedLocationProviderClient(JoinSiteActivity.this);
         mMap = googleMap;
 

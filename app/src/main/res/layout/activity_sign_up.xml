@@ -15,10 +15,10 @@
         android:layout_gravity="center"
         android:layout_marginTop="140dp"
         android:layout_marginBottom="65dp"
+        android:fontFamily="@font/aller_bd"
         android:text="Sign Up"
         android:textColor="@color/black"
-        android:textSize="30sp"
-        android:textStyle="bold" />
+        android:textSize="30sp" />
 
     <EditText
         android:id="@+id/register_email"
@@ -30,6 +30,7 @@
         android:layout_marginBottom="24dp"
         android:ems="10"
         android:hint="Email"
+        android:fontFamily="@font/aller_rg"
         android:inputType="textEmailAddress"
         android:textColor="@color/black"
         android:textColorHint="@color/black"/>
@@ -43,6 +44,7 @@
         android:textColor="@color/black"
         android:layout_gravity="center"
         android:ems="10"
+        android:fontFamily="@font/aller_rg"
         android:hint="Password"
         android:textColorHint="@color/black"
         android:inputType="textPassword" />
@@ -54,6 +56,7 @@
         android:layout_gravity="center"
         android:layout_marginBottom="72dp"
         android:ems="10"
+        android:fontFamily="@font/aller_rg"
         android:hint="Check password"
         android:inputType="textPassword"
         android:textColor="@color/black"
@@ -64,6 +67,7 @@
         android:layout_width="160dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
+        android:fontFamily="@font/aller_rg"
         android:background="@drawable/main_button"
         android:text="Register"
         android:textColor="#000000"

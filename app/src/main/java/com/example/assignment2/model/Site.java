@@ -3,13 +3,14 @@ package com.example.assignment2.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Site implements Serializable {
     private double latitude, longitude;
     private String name; // site name
     private String owner;
-    private ArrayList<String> participants; // All joined volunteers
+    private List<String> participants; // All joined volunteers
     private Integer collected; // amount of waste collected
 
     public Site(){}
@@ -72,11 +73,11 @@ public class Site implements Serializable {
         this.owner = owner;
     }
 
-    public ArrayList<String> getParticipants() {
+    public List<String> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(ArrayList<String> participants) {
+    public void setParticipants(List<String> participants) {
         this.participants = participants;
     }
 

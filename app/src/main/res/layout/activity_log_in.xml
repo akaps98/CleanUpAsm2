@@ -16,9 +16,9 @@
         android:layout_marginTop="180dp"
         android:layout_marginBottom="65dp"
         android:text="Log In"
+        android:fontFamily="@font/aller_bd"
         android:textColor="@color/black"
-        android:textSize="30sp"
-        android:textStyle="bold" />
+        android:textSize="30sp" />
 
     <EditText
         android:id="@+id/input_email"
@@ -29,6 +29,7 @@
         android:layout_marginRight="2dp"
         android:layout_marginBottom="24dp"
         android:ems="10"
+        android:fontFamily="@font/aller_rg"
         android:hint="Enter email address..."
         android:inputType="textEmailAddress"
         android:textColor="@color/black"
@@ -43,6 +44,7 @@
         android:textColor="@color/black"
         android:layout_gravity="center"
         android:ems="10"
+        android:fontFamily="@font/aller_rg"
         android:hint="Enter password..."
         android:textColorHint="@color/black"
         android:inputType="textPassword" />
@@ -52,6 +54,7 @@
         android:layout_width="160dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
+        android:fontFamily="@font/aller_rg"
         android:background="@drawable/main_button"
         android:text="Sign In"
         android:textColor="#000000"

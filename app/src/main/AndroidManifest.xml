@@ -34,6 +34,10 @@
             android:value="AIzaSyDInatnhz8-CmSsGhlz-B75vpuLQIJKkbs" />
 
         <activity
+            android:name=".SiteDetailActivity"
+            android:exported="false"
+            android:label="@string/title_activity_site_detail" />
+        <activity
             android:name=".JoinSiteActivity"
             android:exported="false"
             android:label="@string/title_activity_join_site" />

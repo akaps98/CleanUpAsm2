@@ -99,7 +99,6 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void writeNewUser(String email, String password) {
-        //Site site = new Site(10.203012, 12.543535, "Bangkok", 23); // 나중에 지우기
         User user = new User(email, password);
 
         FirebaseFirestore database = FirebaseFirestore.getInstance();
