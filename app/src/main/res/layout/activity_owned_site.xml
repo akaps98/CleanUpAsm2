@@ -70,12 +70,23 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="-50dp"
-                android:layout_marginBottom="10dp"
                 android:fontFamily="@font/aller_it"
                 android:text=""
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/download_button"
+                android:layout_width="160dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="20dp"
+                android:fontFamily="@font/aller_bd"
+                android:background="@drawable/main_button"
+                android:text="Download"
+                android:textColor="#000000"
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/collectedWaste"
@@ -95,8 +106,8 @@
                 android:layout_width="160dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
-                android:layout_marginBottom="30dp"
-                android:fontFamily="@font/aller_rg"
+                android:layout_marginBottom="20dp"
+                android:fontFamily="@font/aller_bd"
                 android:background="@drawable/main_button"
                 android:text="Edit"
                 android:textColor="#000000"

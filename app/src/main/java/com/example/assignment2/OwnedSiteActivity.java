@@ -34,12 +34,16 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class OwnedSiteActivity extends FragmentActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     private ActivityOwnedSiteBinding binding;
     private final String TAG = OwnedSiteActivity.class.getName();
     Site ownedSite;
-    Button editWaste_button;
+    Button editWaste_button, download_button;
     TextView ownedSiteName, volunteersName, collectedWaste;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -78,6 +82,7 @@ public class OwnedSiteActivity extends FragmentActivity implements OnMapReadyCal
         volunteersName = findViewById(R.id.volunteersName);
         collectedWaste = findViewById(R.id.collectedWaste);
         editWaste_button = findViewById(R.id.editWaste_button);
+        download_button = findViewById(R.id.download_button);
 
         ownedSiteName.append(ownedSite.getName());
         collectedWaste.append(ownedSite.getCollected().toString());
@@ -133,6 +138,44 @@ public class OwnedSiteActivity extends FragmentActivity implements OnMapReadyCal
                 alert.show();
             }
         });
+
+        download_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "ClearAway");
+
+                if(!folder.exists()) {
+                    folder.mkdirs();
+                }
+
+                StringBuilder volunteersList = new StringBuilder();
+                volunteersList.append("Site name: " + ownedSite.getName() + "\n\nVolunteers list:\n");
+
+                Integer idx = 1;
+
+                if(ownedSite.getParticipants().isEmpty()) {
+                    volunteersList.append("No participants!");
+                } else {
+                    for (String participantEmail : ownedSite.getParticipants()) {
+                        volunteersList.append(idx + ". ").append(participantEmail).append("\n");
+                        idx++;
+                    }
+                }
+
+                File txtFile = new File(folder, user.getEmail() + ".txt");
+
+                try {
+                    FileWriter writer = new FileWriter(txtFile);
+                    writer.append(volunteersList.toString());
+                    writer.flush();
+                    writer.close();
+
+                    Toast.makeText(OwnedSiteActivity.this, "Volunteers list has been Downloaded!", Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     /**
@@ -148,7 +191,6 @@ public class OwnedSiteActivity extends FragmentActivity implements OnMapReadyCal
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
         LatLng sitePosition = new LatLng(ownedSite.getLatitude(), ownedSite.getLongitude());
         mMap.addMarker(new MarkerOptions().position(sitePosition).title(ownedSite.getName()));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sitePosition));
