@@ -21,6 +21,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.assignment2.model.Site;
+import com.example.assignment2.utilities.FetchURL;
+import com.example.assignment2.utilities.TaskLoadedCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -32,6 +34,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.assignment2.databinding.ActivityJoinSiteBinding;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -48,13 +52,14 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class JoinSiteActivity extends FragmentActivity implements OnMapReadyCallback {
+public class JoinSiteActivity extends FragmentActivity implements OnMapReadyCallback, TaskLoadedCallback {
     private final String TAG = JoinSiteActivity.class.getName();
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 99;
     private float zoomLevel = 16.0f;
     private GoogleMap mMap;
     private ActivityJoinSiteBinding binding;
     protected FusedLocationProviderClient client;
+    Polyline currentPolyline;
     SearchView searchView;
     Spinner zoomLevelDropdown;
     ArrayList<Site> allSites = new ArrayList<>();
@@ -205,6 +210,26 @@ public class JoinSiteActivity extends FragmentActivity implements OnMapReadyCall
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(@NonNull Marker marker) {
+                if (ActivityCompat.checkSelfPermission(JoinSiteActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(JoinSiteActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(JoinSiteActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+                    return false;
+                }
+
+                client.getLastLocation().addOnSuccessListener(JoinSiteActivity.this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+//                        if (location != null) {
+                            LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                            LatLng selectedLocation = marker.getPosition();
+
+                            String url = getUrl(currentLocation, selectedLocation, "driving");
+                            new FetchURL(JoinSiteActivity.this).execute(url, "driving");
+//                        }
+                    }
+                });
+                //return false;
+
                 db.collection("Site").document(String.valueOf(marker.getPosition().latitude))
                         .get() .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                             @Override
@@ -316,5 +341,25 @@ public class JoinSiteActivity extends FragmentActivity implements OnMapReadyCall
                 .icon(BitmapDescriptorFactory.fromBitmap(resizeBitmap(String.valueOf(R.drawable.custom_map_icon),250,140))));
 
         return marker;
+    }
+
+    private String getUrl(LatLng origin, LatLng dest, String directionMode) {
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+        String mode = "mode=" + directionMode;
+
+        String parameters = str_origin + "&" + str_dest + "&" + mode;
+
+        String output = "json";
+
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + "AIzaSyDInatnhz8-CmSsGhlz-B75vpuLQIJKkbs";
+        return url;
+    }
+
+    @Override
+    public void onTaskDone(Object... values) {
+        if (currentPolyline != null)
+            currentPolyline.remove();
+        currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
     }
 }
