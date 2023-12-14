@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -219,16 +218,13 @@ public class JoinSiteActivity extends FragmentActivity implements OnMapReadyCall
                 client.getLastLocation().addOnSuccessListener(JoinSiteActivity.this, new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
-//                        if (location != null) {
-                            LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                            LatLng selectedLocation = marker.getPosition();
+                        LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                        LatLng selectedLocation = marker.getPosition();
 
-                            String url = getUrl(currentLocation, selectedLocation, "driving");
-                            new FetchURL(JoinSiteActivity.this).execute(url, "driving");
-//                        }
+                        String url = getUrl(currentLocation, selectedLocation, "driving");
+                        new FetchURL(JoinSiteActivity.this).execute(url, "driving");
                     }
                 });
-                //return false;
 
                 db.collection("Site").document(String.valueOf(marker.getPosition().latitude))
                         .get() .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
