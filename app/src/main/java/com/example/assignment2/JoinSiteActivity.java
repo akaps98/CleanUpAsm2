@@ -237,8 +237,8 @@ public class JoinSiteActivity extends FragmentActivity implements OnMapReadyCall
                                     // create dialog message to display details of site to user
                                     String message = "Site name: " + marker.getTitle()
                                                     + "\nOwner: " + ownerName
-                                                    + "\nLatitude: " + marker.getPosition().latitude
-                                                    + "\nLongitude: " + marker.getPosition().longitude;
+                                                    + "\nLatitude: " + String.format("%.3f", marker.getPosition().latitude)
+                                                    + "\nLongitude: " + String.format("%.3f", marker.getPosition().longitude);
 
                                     AlertDialog.Builder alert = new AlertDialog.Builder(JoinSiteActivity.this);
 
